@@ -1,0 +1,66 @@
+# Odvisnosti Node.js in lokalni predpomnilniki
+node_modules/
+.npm/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/install-state.gz
+.pnp.*
+.cache/
+*.tsbuildinfo
+
+# Rezultati gradnje React, Vite in strežniškega dela
+dist/
+build/
+.vite/
+.vite-temp/
+coverage/
+.nyc_output/
+
+# Dnevniki in začasne datoteke
+*.log
+logs/
+*.pid
+*.pid.lock
+*.swp
+*.swo
+*~
+
+# Lokalne nastavitve okolja; vzorci brez skrivnosti ostanejo vključeni
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.env.template
+!.env.*.template
+*.local
+
+# Prisma: generirani odjemalec in morebitne lokalne razvojne baze
+**/src/generated/prisma/
+**/generated/prisma/
+**/prisma/*.db
+**/prisma/*.db-journal
+**/prisma/*.db-shm
+**/prisma/*.db-wal
+**/prisma/*.sqlite
+**/prisma/*.sqlite3
+# Shema, konfiguracija Prisma, migracije in inicializacijski skripti se vključujejo.
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100/
+.Trashes/
+
+# VS Code: osebne nastavitve se prezrejo, skupna projektna konfiguracija ostane
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/*.code-snippets
+.history/
+*.code-workspace
+
+# Dokumentacija, SVG, PNG in datoteke z zaklenjenimi odvisnostmi se vključujejo.
