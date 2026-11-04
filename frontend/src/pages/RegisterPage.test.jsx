@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RegisterPage from './RegisterPage.jsx';
 import { register } from '../services/auth.js';
 import { ApiError } from '../services/api.js';
+import { renderWithProviders } from '../test/utils.jsx';
 
 vi.mock('../services/auth.js', async (importOriginal) => ({
   ...(await importOriginal()),
@@ -21,7 +22,7 @@ async function fillAndSubmit({ name = 'Maja', email = 'maja@example.com', passwo
 describe('RegisterPage (US-01)', () => {
   beforeEach(() => {
     vi.mocked(register).mockReset();
-    render(<RegisterPage />);
+    renderWithProviders(<RegisterPage />);
   });
 
   it('validates input before calling the API', async () => {
