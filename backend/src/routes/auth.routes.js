@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { validate } from '../middleware/validate.js';
+import { authenticate } from '../middleware/auth.js';
 import * as auth from '../controllers/auth.controller.js';
 
 const email = z.string('E-naslov je obvezen.')
@@ -17,6 +18,13 @@ const registerSchema = z.object({
     .max(72, 'Geslo je predolgo.'),
 });
 
+const loginSchema = z.object({
+  email,
+  password: z.string('Geslo je obvezno.').min(1, 'Geslo je obvezno.'),
+});
+
 export const authRouter = Router();
 
 authRouter.post('/register', validate({ body: registerSchema }), auth.register);
+authRouter.post('/login', validate({ body: loginSchema }), auth.login);
+authRouter.get('/me', authenticate, auth.me);
