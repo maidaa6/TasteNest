@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import FormField from '../components/FormField.jsx';
 import { register, validateRegistration } from '../services/auth.js';
 import { fieldErrorsFromApi } from '../services/formErrors.js';
@@ -47,6 +48,7 @@ export default function RegisterPage() {
         <p className="alert alert-success" role="status">
           Račun je ustvarjen. Zdaj se lahko prijavite z e-naslovom {values.email.trim()}.
         </p>
+        <p><Link className="button" to="/prijava">Na prijavo</Link></p>
       </section>
     );
   }
