@@ -17,6 +17,7 @@ export default function Layout() {
           <NavLink to="/" className="brand">TasteNest</NavLink>
           <nav className="nav">
             <NavLink to="/" end>Recepti</NavLink>
+            {user?.role === 'AUTHOR' && <NavLink to="/moji-recepti">Moji recepti</NavLink>}
             {user ? (
               <>
                 <span className="muted">{user.name}</span>

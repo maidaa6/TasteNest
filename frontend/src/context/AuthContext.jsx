@@ -8,8 +8,8 @@ const AuthContext = createContext(null);
  * Holds the JWT in React state only (never in localStorage/sessionStorage), so a
  * page reload ends the session – an explicit MVP decision, see ADR-0005.
  */
-export function AuthProvider({ children }) {
-  const [session, setSession] = useState(null);
+export function AuthProvider({ children, initialSession = null }) {
+  const [session, setSession] = useState(initialSession);
 
   const login = useCallback(async (credentials) => {
     const { token, user } = await loginRequest(credentials);

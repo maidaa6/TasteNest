@@ -22,6 +22,16 @@ export async function authenticate(req, _res, next) {
   next();
 }
 
+/**
+ * For public endpoints whose response depends on the viewer. Without an
+ * Authorization header the request continues as a guest; a header that is
+ * present must be valid.
+ */
+export function optionalAuth(req, res, next) {
+  if (!req.get('Authorization')) return next();
+  return authenticate(req, res, next);
+}
+
 export function requireRole(...roles) {
   return (req, _res, next) => {
     if (!roles.includes(req.user?.role)) return next(forbidden());
