@@ -102,6 +102,32 @@ export async function getRecipe(id, viewer) {
   return toRecipeDto(recipe);
 }
 
+const summarySelect = {
+  id: true,
+  title: true,
+  description: true,
+  prepMinutes: true,
+  baseServings: true,
+  createdAt: true,
+  author: { select: { id: true, name: true } },
+  category: { select: { id: true, name: true } },
+};
+
+/** Public search: published recipes only; all given filters must match. */
+export function searchRecipes({ q, ingredientId, categoryId, maxPrepMinutes }) {
+  return prisma.recipe.findMany({
+    where: {
+      status: 'PUBLISHED',
+      ...(q && { title: { contains: q, mode: 'insensitive' } }),
+      ...(categoryId && { categoryId }),
+      ...(ingredientId && { ingredients: { some: { ingredientId } } }),
+      ...(maxPrepMinutes !== undefined && { prepMinutes: { lte: maxPrepMinutes } }),
+    },
+    select: summarySelect,
+    orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+  });
+}
+
 export async function listAuthorRecipes(authorId) {
   const recipes = await prisma.recipe.findMany({
     where: { authorId },

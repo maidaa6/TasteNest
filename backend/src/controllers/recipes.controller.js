@@ -14,6 +14,10 @@ export async function get(req, res) {
   res.json({ recipe: await recipeService.getRecipe(req.params.id, req.user) });
 }
 
+export async function search(req, res) {
+  res.json({ recipes: await recipeService.searchRecipes(req.valid.query) });
+}
+
 export async function listMine(req, res) {
   res.json({ recipes: await recipeService.listAuthorRecipes(req.user.id) });
 }
