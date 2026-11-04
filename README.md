@@ -115,6 +115,7 @@ TasteNest/
 
 | Storitev | Naslov |
 |---|---|
+| Frontend | `http://localhost:5173` |
 | API | `http://localhost:3000/api` |
 | PostgreSQL | `localhost:5432` (baza `tastenest`, testna baza `tastenest_test`) |
 
@@ -148,6 +149,19 @@ Preverjanje: `curl http://localhost:3000/api/health` vrne `{"status":"ok"}`.
 | `npm run db:seed` | Idempotentno napolni bazo z začetnimi podatki |
 | `npm run db:reset` | Pobriše bazo, ponovno uveljavi migracije in zažene seed |
 
+### 3. Frontend
+
+V drugem terminalu:
+
+```bash
+cd frontend
+cp .env.example .env    # VITE_API_URL=http://localhost:3000/api
+npm install
+npm run dev
+```
+
+Aplikacija je dostopna na `http://localhost:5173`. Produkcijska gradnja: `npm run build` (rezultat v `frontend/dist/`).
+
 ### Začetni računi
 
 Prvi administrator se ustvari samo s seed skripto iz `ADMIN_EMAIL` in `ADMIN_PASSWORD` v `backend/.env`. Seed ustvari še demo račune za lokalni razvoj (izklop: `SEED_DEMO_DATA=false`):
@@ -160,10 +174,10 @@ Prvi administrator se ustvari samo s seed skripto iz `ADMIN_EMAIL` in `ADMIN_PAS
 ### Testi
 
 ```bash
-cd backend
-npm test
+cd backend && npm test     # integracijski testi API (potrebna je zagnana baza)
+cd frontend && npm test    # testi komponent in odjemalca API (jsdom)
 ```
 
-Integracijski testi uporabljajo bazo iz `TEST_DATABASE_URL` (`tastenest_test`), pred zagonom nanjo uveljavijo migracije in jo med testi praznijo. Testi se samodejno izvedejo tudi na vsakem Pull Requestu (GitHub Actions, `.github/workflows/ci.yml`).
+Integracijski testi backenda uporabljajo bazo iz `TEST_DATABASE_URL` (`tastenest_test`), pred zagonom nanjo uveljavijo migracije in jo med testi praznijo. Testi se samodejno izvedejo tudi na vsakem Pull Requestu (GitHub Actions, `.github/workflows/ci.yml`).
 
 `.env` in skrivnosti se ne vključujejo v Git; vzorčne datoteke `.env.example`, shema Prisma in migracije se vključujejo.
