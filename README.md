@@ -132,12 +132,30 @@ Ob prvem zagonu vsebnik ustvari tudi testno bazo `tastenest_test` (skripta v `do
 
 ```bash
 cd backend
-cp .env.example .env    # nastavite JWT_SECRET
-npm install
+cp .env.example .env    # nastavite JWT_SECRET in ADMIN_PASSWORD
+npm install             # ustvari tudi Prisma Client
+npm run db:migrate      # uveljavi migracije v bazi tastenest
+npm run db:seed         # administrator, kategorije, sestavine in demo podatki
 npm run dev
 ```
 
 Preverjanje: `curl http://localhost:3000/api/health` vrne `{"status":"ok"}`.
+
+| Skripta | Namen |
+|---|---|
+| `npm run db:migrate` | Ustvari in uveljavi migracije med razvojem |
+| `npm run db:deploy` | Uveljavi obstoječe migracije brez ustvarjanja novih |
+| `npm run db:seed` | Idempotentno napolni bazo z začetnimi podatki |
+| `npm run db:reset` | Pobriše bazo, ponovno uveljavi migracije in zažene seed |
+
+### Začetni računi
+
+Prvi administrator se ustvari samo s seed skripto iz `ADMIN_EMAIL` in `ADMIN_PASSWORD` v `backend/.env`. Seed ustvari še demo račune za lokalni razvoj (izklop: `SEED_DEMO_DATA=false`):
+
+| Vloga | E-naslov | Geslo |
+|---|---|---|
+| `AUTHOR` | `avtor@tastenest.local` | `avtor1234` |
+| `USER` | `uporabnik@tastenest.local` | `uporabnik1234` |
 
 ### Testi
 
@@ -146,6 +164,6 @@ cd backend
 npm test
 ```
 
-Testi se samodejno izvedejo tudi na vsakem Pull Requestu (GitHub Actions, `.github/workflows/ci.yml`).
+Integracijski testi uporabljajo bazo iz `TEST_DATABASE_URL` (`tastenest_test`), pred zagonom nanjo uveljavijo migracije in jo med testi praznijo. Testi se samodejno izvedejo tudi na vsakem Pull Requestu (GitHub Actions, `.github/workflows/ci.yml`).
 
 `.env` in skrivnosti se ne vključujejo v Git; vzorčne datoteke `.env.example`, shema Prisma in migracije se vključujejo.
