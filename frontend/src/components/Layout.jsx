@@ -1,6 +1,15 @@
-import { NavLink, Outlet } from 'react-router';
+import { NavLink, Outlet, useNavigate } from 'react-router';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function Layout() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const onLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -8,7 +17,17 @@ export default function Layout() {
           <NavLink to="/" className="brand">TasteNest</NavLink>
           <nav className="nav">
             <NavLink to="/" end>Recepti</NavLink>
-            <NavLink to="/registracija">Registracija</NavLink>
+            {user ? (
+              <>
+                <span className="muted">{user.name}</span>
+                <button type="button" className="link-button" onClick={onLogout}>Odjava</button>
+              </>
+            ) : (
+              <>
+                <NavLink to="/prijava">Prijava</NavLink>
+                <NavLink to="/registracija">Registracija</NavLink>
+              </>
+            )}
           </nav>
         </div>
       </header>
