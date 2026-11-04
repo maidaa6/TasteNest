@@ -2,7 +2,7 @@
 
 TasteNest je odzivna spletna aplikacija za objavljanje in odkrivanje receptov ter načrtovanje obrokov. Povezuje recepte, tedenski načrt in samodejno pripravo nakupovalnega seznama, da uporabniku ni treba ročno prepisovati sestavin in preračunavati količin.
 
-Repozitorij trenutno vsebuje zasnovo in dokumentacijo za 3. nalogo RIRS. Mapi `frontend/` in `backend/` sta pripravljeni za kasnejšo implementacijo; aplikacija še ni izvedena.
+Repozitorij vsebuje zasnovo iz 3. naloge RIRS in implementacijo MVP, ki nastaja v 4. nalogi. Razvoj poteka po Issues in Pull Requestih, napredek pa se spremlja na GitHub Project boardu.
 
 ## Uporabniške vloge
 
@@ -108,4 +108,44 @@ TasteNest/
 
 ## Lokalni zagon
 
-Predvideni predpogoji, naslovi in koraki so opisani v [arhitekturi](docs/04-arhitektura-in-tehnoloski-sklad.md#lokalni-zagon). Ukazi bodo uporabni po pripravi izvedbenih datotek, namestitvi odvisnosti in nastavitvi okolja. `.env` in skrivnosti se ne vključujejo v Git; vzorčne datoteke `.env.example`, shema Prisma in migracije se vključujejo.
+### Predpogoji
+
+- Node.js 22 ali novejši in npm
+- Docker z Docker Compose
+
+| Storitev | Naslov |
+|---|---|
+| API | `http://localhost:3000/api` |
+| PostgreSQL | `localhost:5432` (baza `tastenest`, testna baza `tastenest_test`) |
+
+### 1. Podatkovna baza
+
+```bash
+docker compose up -d
+```
+
+Ob prvem zagonu vsebnik ustvari tudi testno bazo `tastenest_test` (skripta v `docker/postgres-init/`). Če je volumen že obstajal pred to skripto, ga je treba ponovno ustvariti z `docker compose down -v`.
+
+Če so vrata 5432 že zasedena (npr. lokalno nameščen PostgreSQL), v korenu projekta ustvarite `.env` z `DB_PORT=5433` in enaka vrata uporabite v `DATABASE_URL` in `TEST_DATABASE_URL` v `backend/.env`.
+
+### 2. Backend
+
+```bash
+cd backend
+cp .env.example .env    # nastavite JWT_SECRET
+npm install
+npm run dev
+```
+
+Preverjanje: `curl http://localhost:3000/api/health` vrne `{"status":"ok"}`.
+
+### Testi
+
+```bash
+cd backend
+npm test
+```
+
+Testi se samodejno izvedejo tudi na vsakem Pull Requestu (GitHub Actions, `.github/workflows/ci.yml`).
+
+`.env` in skrivnosti se ne vključujejo v Git; vzorčne datoteke `.env.example`, shema Prisma in migracije se vključujejo.
