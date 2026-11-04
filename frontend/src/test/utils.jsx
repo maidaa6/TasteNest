@@ -4,15 +4,19 @@ import { MemoryRouter } from 'react-router';
 import { AuthProvider } from '../context/AuthContext.jsx';
 import App from '../App.jsx';
 
-export function renderWithProviders(ui, { route = '/' } = {}) {
+export const AUTHOR = { id: 'author-1', name: 'Ana Avtorica', email: 'avtor@example.com', role: 'AUTHOR' };
+
+/** `user` starts the tree with an active session for that user. */
+export function renderWithProviders(ui, { route = '/', user } = {}) {
+  const session = user ? { token: 'test-token', user } : null;
   return render(
     <MemoryRouter initialEntries={[route]}>
-      <AuthProvider>{ui}</AuthProvider>
+      <AuthProvider initialSession={session}>{ui}</AuthProvider>
     </MemoryRouter>,
   );
 }
 
-export const renderApp = (route = '/') => renderWithProviders(<App />, { route });
+export const renderApp = (route = '/', options = {}) => renderWithProviders(<App />, { route, ...options });
 
 /**
  * Stubs fetch with route handlers keyed by "METHOD /path" (path relative to /api).
