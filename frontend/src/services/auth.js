@@ -14,3 +14,7 @@ export function validateRegistration({ name, email, password }) {
 export function register({ name, email, password }) {
   return api('/auth/register', { method: 'POST', body: { name, email, password } });
 }
+
+export function login({ email, password }) {
+  return api('/auth/login', { method: 'POST', body: { email, password } });
+}
