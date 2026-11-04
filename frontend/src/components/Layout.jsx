@@ -8,6 +8,7 @@ export default function Layout() {
           <NavLink to="/" className="brand">TasteNest</NavLink>
           <nav className="nav">
             <NavLink to="/" end>Recepti</NavLink>
+            <NavLink to="/registracija">Registracija</NavLink>
           </nav>
         </div>
       </header>

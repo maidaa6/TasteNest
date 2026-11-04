@@ -17,3 +17,11 @@ describe('App routing', () => {
     expect(screen.getByRole('heading', { name: 'Stran ne obstaja' })).toBeInTheDocument();
   });
 });
+
+describe('navigation', () => {
+  it('links to registration', () => {
+    renderAt('/registracija');
+    expect(screen.getByRole('heading', { name: 'Registracija' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Registracija' })).toHaveClass('active');
+  });
+});
