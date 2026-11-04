@@ -281,3 +281,100 @@ textarea:focus {
   background: var(--color-error-bg);
   color: var(--color-error);
 }
+
+/* Recipe search (WF-01) */
+.search {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  margin: 1rem 0 0.75rem;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filters label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  min-width: 160px;
+}
+
+.filters-clear {
+  color: var(--color-primary);
+  padding-bottom: 0.5rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--color-muted);
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.recipe-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.recipe-card p {
+  margin: 0;
+}
+
+.recipe-card-category {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+
+.recipe-card-title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.recipe-card-description {
+  color: var(--color-text);
+}
+
+.recipe-card-action {
+  margin-top: auto;
+}
+
+/* Recipe detail (WF-02) */
+.recipe-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.recipe-detail h2 {
+  font-size: 1.15rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.recipe-detail .card > h2:first-child {
+  margin-top: 0;
+}
+
+.ingredient-list {
+  padding-left: 1.25rem;
+  margin: 0 0 1rem;
+}
+
+.instructions {
+  white-space: pre-line;
+  margin: 0;
+}

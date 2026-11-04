@@ -162,6 +162,8 @@ npm run dev
 
 Aplikacija je dostopna na `http://localhost:5173`. Produkcijska gradnja: `npm run build` (rezultat v `frontend/dist/`).
 
+Če so vrata 5173 zasedena, zaženite `npm run dev -- --port 5174` in v `backend/.env` nastavite `CORS_ORIGIN=http://localhost:5174`, sicer brskalnik zavrne klice API.
+
 ### Začetni računi
 
 Prvi administrator se ustvari samo s seed skripto iz `ADMIN_EMAIL` in `ADMIN_PASSWORD` v `backend/.env`. Seed ustvari še demo račune za lokalni razvoj (izklop: `SEED_DEMO_DATA=false`):

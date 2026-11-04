@@ -4,6 +4,13 @@ import { MemoryRouter } from 'react-router';
 import { AuthProvider } from '../context/AuthContext.jsx';
 import App from '../App.jsx';
 
+// Responses for pages that load the public recipe list and filter options.
+export const EMPTY_CATALOG = {
+  'GET /recipes': { body: { recipes: [] } },
+  'GET /categories': { body: { categories: [] } },
+  'GET /ingredients': { body: { ingredients: [] } },
+};
+
 export const AUTHOR = { id: 'author-1', name: 'Ana Avtorica', email: 'avtor@example.com', role: 'AUTHOR' };
 
 /** `user` starts the tree with an active session for that user. */

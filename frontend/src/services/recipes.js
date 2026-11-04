@@ -85,3 +85,15 @@ export function formToPayload(form) {
     })),
   };
 }
+
+export const SEARCH_FILTERS = ['q', 'categoryId', 'ingredientId', 'maxPrepMinutes'];
+
+export function searchRecipes(filters, { signal } = {}) {
+  const params = new URLSearchParams();
+  for (const key of SEARCH_FILTERS) {
+    const value = filters[key]?.trim();
+    if (value) params.set(key, value);
+  }
+  const query = params.toString();
+  return api(`/recipes${query ? `?${query}` : ''}`, { signal }).then((res) => res.recipes);
+}

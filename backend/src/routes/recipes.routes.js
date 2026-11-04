@@ -46,10 +46,23 @@ const recipeFields = z.object({
   ingredients: ingredientLines,
 });
 
+// Empty query parameters (e.g. `?categoryId=` from a cleared form) mean "no filter".
+const optionalParam = (schema) => z.preprocess((v) => (v === '' ? undefined : v), schema.optional());
+
+const searchQuery = z.object({
+  q: optionalParam(z.string().trim().max(100, 'Iskalni niz je predolg.')),
+  ingredientId: optionalParam(z.uuid('Neveljavna sestavina.')),
+  categoryId: optionalParam(z.uuid('Neveljavna kategorija.')),
+  maxPrepMinutes: optionalParam(z.coerce.number('Čas priprave mora biti število.')
+    .int('Čas priprave mora biti celo število minut.')
+    .min(0, 'Čas priprave ne sme biti negativen.')),
+});
+
 const author = [authenticate, requireRole('AUTHOR')];
 
 export const recipesRouter = Router();
 
+recipesRouter.get('/', validate({ query: searchQuery }), recipes.search);
 recipesRouter.get('/mine', ...author, recipes.listMine);
 recipesRouter.get('/:id', optionalAuth, recipes.get);
 recipesRouter.post('/', ...author, validate({ body: recipeFields }), recipes.create);

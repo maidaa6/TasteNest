@@ -5,12 +5,13 @@ import { Route, Routes } from 'react-router';
 import Layout from '../components/Layout.jsx';
 import LoginPage from './LoginPage.jsx';
 import RequireAuth from '../components/RequireAuth.jsx';
-import { mockApi, renderApp, renderWithProviders } from '../test/utils.jsx';
+import { EMPTY_CATALOG, mockApi, renderApp, renderWithProviders } from '../test/utils.jsx';
 
 const USER = { id: 'u1', name: 'Maja Novak', email: 'maja@example.com', role: 'USER' };
 
 function mockLogin() {
   return mockApi({
+    ...EMPTY_CATALOG,
     'POST /auth/login': ({ body }) => (body.password === 'pravilno123'
       ? { body: { token: 'jwt-token', user: USER } }
       : { status: 401, body: { error: { message: 'Napačen e-naslov ali geslo.' } } }),
@@ -57,7 +58,7 @@ describe('LoginPage (US-02)', () => {
     const user = await logIn();
 
     expect(await screen.findByText(USER.name)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Recepti' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Raziskuj recepte' })).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Odjava' }));
     expect(screen.getByRole('link', { name: 'Prijava' })).toBeInTheDocument();
