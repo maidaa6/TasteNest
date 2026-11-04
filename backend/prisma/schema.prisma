@@ -1,0 +1,220 @@
+// Conceptual model: docs/03-podatkovni-model.md
+// Tables and columns are snake_case in the database, camelCase in the client.
+// CHECK constraints that Prisma cannot express live in the initial migration.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  AUTHOR
+  ADMIN
+}
+
+enum RecipeStatus {
+  PUBLISHED
+  HIDDEN
+}
+
+enum Unit {
+  g
+  kg
+  ml
+  l
+  kos
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(USER)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  recipes   Recipe[]
+  comments  Comment[]
+  ratings   Rating[]
+  favorites Favorite[]
+  mealPlans MealPlan[]
+
+  @@map("users")
+}
+
+model Category {
+  id   String @id @default(uuid()) @db.Uuid
+  name String @unique
+
+  recipes Recipe[]
+
+  @@map("categories")
+}
+
+model Recipe {
+  id           String       @id @default(uuid()) @db.Uuid
+  authorId     String       @map("author_id") @db.Uuid
+  categoryId   String       @map("category_id") @db.Uuid
+  title        String
+  description  String?
+  instructions String
+  baseServings Int          @map("base_servings")
+  prepMinutes  Int          @map("prep_minutes")
+  status       RecipeStatus @default(PUBLISHED)
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  author       User               @relation(fields: [authorId], references: [id])
+  category     Category           @relation(fields: [categoryId], references: [id])
+  ingredients  RecipeIngredient[]
+  comments     Comment[]
+  ratings      Rating[]
+  favorites    Favorite[]
+  plannedMeals PlannedMeal[]
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([status])
+  @@map("recipes")
+}
+
+model Ingredient {
+  id   String @id @default(uuid()) @db.Uuid
+  name String @unique
+
+  recipeIngredients RecipeIngredient[]
+  shoppingListItems ShoppingListItem[]
+
+  @@map("ingredients")
+}
+
+model RecipeIngredient {
+  id           String  @id @default(uuid()) @db.Uuid
+  recipeId     String  @map("recipe_id") @db.Uuid
+  ingredientId String  @map("ingredient_id") @db.Uuid
+  quantity     Decimal @db.Decimal(10, 2)
+  unit         Unit
+
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([recipeId, ingredientId, unit])
+  @@index([ingredientId])
+  @@map("recipe_ingredients")
+}
+
+model Comment {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  recipeId  String   @map("recipe_id") @db.Uuid
+  content   String
+  isHidden  Boolean  @default(false) @map("is_hidden")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  recipe Recipe @relation(fields: [recipeId], references: [id])
+
+  @@index([userId])
+  @@index([recipeId])
+  @@map("comments")
+}
+
+model Rating {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  recipeId  String   @map("recipe_id") @db.Uuid
+  score     Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  recipe Recipe @relation(fields: [recipeId], references: [id])
+
+  @@unique([userId, recipeId])
+  @@index([recipeId])
+  @@map("ratings")
+}
+
+model Favorite {
+  userId    String   @map("user_id") @db.Uuid
+  recipeId  String   @map("recipe_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  recipe Recipe @relation(fields: [recipeId], references: [id])
+
+  @@id([userId, recipeId])
+  @@index([recipeId])
+  @@map("favorites")
+}
+
+model MealPlan {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  // Monday of the planned week
+  weekStart DateTime @map("week_start") @db.Date
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user         User          @relation(fields: [userId], references: [id])
+  meals        PlannedMeal[]
+  shoppingList ShoppingList?
+
+  @@unique([userId, weekStart])
+  @@map("meal_plans")
+}
+
+model PlannedMeal {
+  id         String   @id @default(uuid()) @db.Uuid
+  mealPlanId String   @map("meal_plan_id") @db.Uuid
+  recipeId   String   @map("recipe_id") @db.Uuid
+  day        DateTime @db.Date
+  mealType   MealType @map("meal_type")
+  servings   Int
+
+  mealPlan MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  recipe   Recipe   @relation(fields: [recipeId], references: [id])
+
+  @@index([mealPlanId])
+  @@index([recipeId])
+  @@map("planned_meals")
+}
+
+model ShoppingList {
+  id          String   @id @default(uuid()) @db.Uuid
+  mealPlanId  String   @unique @map("meal_plan_id") @db.Uuid
+  generatedAt DateTime @default(now()) @map("generated_at")
+
+  mealPlan MealPlan           @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  items    ShoppingListItem[]
+
+  @@map("shopping_lists")
+}
+
+model ShoppingListItem {
+  id             String  @id @default(uuid()) @db.Uuid
+  shoppingListId String  @map("shopping_list_id") @db.Uuid
+  ingredientId   String  @map("ingredient_id") @db.Uuid
+  quantity       Decimal @db.Decimal(12, 2)
+  unit           Unit
+  checked        Boolean @default(false)
+
+  shoppingList ShoppingList @relation(fields: [shoppingListId], references: [id], onDelete: Cascade)
+  ingredient   Ingredient   @relation(fields: [ingredientId], references: [id])
+
+  @@unique([shoppingListId, ingredientId, unit])
+  @@index([ingredientId])
+  @@map("shopping_list_items")
+}
