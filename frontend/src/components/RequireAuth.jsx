@@ -13,7 +13,7 @@ export default function RequireAuth({ roles, children }) {
 
   if (roles && !roles.includes(user.role)) {
     return (
-      <section>
+      <section className="message-page">
         <h1>Dostop ni dovoljen</h1>
         <p className="muted">Vaš račun nima pravic za to stran.</p>
       </section>

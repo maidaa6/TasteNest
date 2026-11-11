@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
+import AuthLayout from '../components/AuthLayout.jsx';
 import FormField from '../components/FormField.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -33,8 +34,7 @@ export default function LoginPage() {
   };
 
   return (
-    <section>
-      <h1>Prijava</h1>
+    <AuthLayout title="Prijava" intro="Dobrodošli nazaj! Prijavite se za objavljanje in načrtovanje obrokov.">
       <form className="form" onSubmit={onSubmit} noValidate>
         {error && <p className="alert" role="alert">{error}</p>}
 
@@ -43,11 +43,11 @@ export default function LoginPage() {
         <FormField label="Geslo" name="password" type="password" autoComplete="current-password"
           value={values.password} onChange={onChange} />
 
-        <button className="button" type="submit" disabled={submitting}>
+        <button className="button button-block" type="submit" disabled={submitting}>
           {submitting ? 'Prijavljanje …' : 'Prijava'}
         </button>
         <p className="muted">Še nimate računa? <Link to="/registracija">Registrirajte se</Link>.</p>
       </form>
-    </section>
+    </AuthLayout>
   );
 }
