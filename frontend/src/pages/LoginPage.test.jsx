@@ -57,8 +57,9 @@ describe('LoginPage (US-02)', () => {
 
     const user = await logIn();
 
-    expect(await screen.findByText(USER.name)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Raziskuj recepte' })).toBeInTheDocument();
+    // The session is set before the redirect renders, so wait for the target page itself.
+    expect(await screen.findByRole('heading', { name: 'Raziskuj recepte' })).toBeInTheDocument();
+    expect(screen.getByText(USER.name)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Odjava' }));
     expect(screen.getByRole('link', { name: 'Prijava' })).toBeInTheDocument();
