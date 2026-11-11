@@ -4,17 +4,6 @@ TasteNest je odzivna spletna aplikacija za objavljanje in odkrivanje receptov te
 
 Repozitorij vsebuje zasnovo iz 3. naloge RIRS in implementacijo MVP, ki nastaja v 4. nalogi. Razvoj poteka po Issues in Pull Requestih, napredek pa se spremlja na GitHub Project boardu.
 
-## Uporabniške vloge
-
-| Vloga | Glavne možnosti |
-|---|---|
-| Gost | Pregled objavljenih receptov, iskanje in filtriranje, registracija in prijava. |
-| Uporabnik (`USER`) | Komentiranje, ocenjevanje, priljubljeni recepti, lastni tedenski načrti in nakupovalni seznami. |
-| Avtor (`AUTHOR`) | Vse pravice uporabnika ter objavljanje in urejanje svojih receptov. |
-| Administrator (`ADMIN`) | Upravljanje računov, vlog in kategorij ter moderiranje receptov in komentarjev. |
-
-Račun ima eno vlogo; registracija ustvari `USER`, povišanje opravi administrator, prvi administrator pa se pripravi z inicializacijskim skriptom. Načrti in nakupovalni seznami so zasebni lastniku; administrator do tujih podatkov nima dostopa brez posebnega pooblastila.
-
 ## Glavne funkcionalnosti MVP
 
 - Registracija, prijava ter preverjanje vlog in lastništva podatkov na backendu.
@@ -102,6 +91,7 @@ TasteNest/
 │   ├── wireframes/                 # Izvirniki SVG in WF-01–WF-03 v PNG
 │   └── adr/                        # Predloga in oštevilčene odločitve
 ├── docker-compose.yml
+├── .env.example                    # Nastavitve baze za docker compose
 ├── .gitignore
 └── README.md
 ```
@@ -122,18 +112,19 @@ TasteNest/
 ### 1. Podatkovna baza
 
 ```bash
+cp .env.example .env    # nastavite POSTGRES_PASSWORD
 docker compose up -d
 ```
 
-Ob prvem zagonu vsebnik ustvari tudi testno bazo `tastenest_test` (skripta v `docker/postgres-init/`). Če je volumen že obstajal pred to skripto, ga je treba ponovno ustvariti z `docker compose down -v`.
+Ob prvem zagonu vsebnik ustvari tudi testno bazo `tastenest_test` (skripta v `docker/postgres-init/`). Če je volumen že obstajal pred to skripto, ga je treba ponovno ustvariti z `docker compose down -v`. Uporabnik in geslo baze veljata samo ob prvem zagonu (ob ustvarjanju volumna).
 
-Če so vrata 5432 že zasedena (npr. lokalno nameščen PostgreSQL), v korenu projekta ustvarite `.env` z `DB_PORT=5433` in enaka vrata uporabite v `DATABASE_URL` in `TEST_DATABASE_URL` v `backend/.env`.
+Če so vrata 5432 že zasedena (npr. lokalno nameščen PostgreSQL), v korenskem `.env` nastavite `DB_PORT=5433` in enaka vrata uporabite v `DATABASE_URL` in `TEST_DATABASE_URL` v `backend/.env`.
 
 ### 2. Backend
 
 ```bash
 cd backend
-cp .env.example .env    # nastavite JWT_SECRET in ADMIN_PASSWORD
+cp .env.example .env    # nastavite JWT_SECRET, ADMIN_PASSWORD, DEMO_PASSWORD in geslo baze v DATABASE_URL
 npm install             # ustvari tudi Prisma Client
 npm run db:migrate      # uveljavi migracije v bazi tastenest
 npm run db:seed         # administrator, kategorije, sestavine in demo podatki
@@ -166,12 +157,14 @@ Aplikacija je dostopna na `http://localhost:5173`. Produkcijska gradnja: `npm ru
 
 ### Začetni računi
 
-Prvi administrator se ustvari samo s seed skripto iz `ADMIN_EMAIL` in `ADMIN_PASSWORD` v `backend/.env`. Seed ustvari še demo račune za lokalni razvoj (izklop: `SEED_DEMO_DATA=false`):
+Prvi administrator se ustvari samo s seed skripto iz `ADMIN_EMAIL` in `ADMIN_PASSWORD` v `backend/.env`. Če je nastavljen `DEMO_PASSWORD`, seed ustvari še demo račune za lokalni razvoj z istim geslom (izklop: `SEED_DEMO_DATA=false` ali prazen `DEMO_PASSWORD`):
 
-| Vloga | E-naslov | Geslo |
-|---|---|---|
-| `AUTHOR` | `avtor@tastenest.local` | `avtor1234` |
-| `USER` | `uporabnik@tastenest.local` | `uporabnik1234` |
+| Vloga | E-naslov |
+|---|---|
+| `AUTHOR` | `avtor@tastenest.local` |
+| `USER` | `uporabnik@tastenest.local` |
+
+Gesla so samo v lokalnih datotekah `.env`, ki niso v Gitu.
 
 ### Testi
 

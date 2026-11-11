@@ -1,6 +1,7 @@
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { prisma, resetDatabase } from './helpers/db.js';
 import { seed } from '../prisma/seed.js';
+import { verifyPassword } from '../src/utils/password.js';
 
 async function createRecipeFixture() {
   const author = await prisma.user.create({
@@ -71,7 +72,11 @@ describe('database constraints', () => {
 describe('seed', () => {
   beforeEach(resetDatabase);
 
-  const env = { ADMIN_EMAIL: 'Admin@TasteNest.local', ADMIN_PASSWORD: 'admin1234' };
+  const env = {
+    ADMIN_EMAIL: 'Admin@TasteNest.local',
+    ADMIN_PASSWORD: 'admin1234',
+    DEMO_PASSWORD: 'demo-test-1234',
+  };
 
   it('creates the first administrator with a hashed password', async () => {
     await seed(prisma, env);
@@ -87,6 +92,22 @@ describe('seed', () => {
 
     expect(await prisma.user.count()).toBe(3);
     expect(await prisma.recipe.count()).toBe(3);
+    expect(await prisma.category.count()).toBe(6);
+  });
+
+  it('creates demo accounts with the password from DEMO_PASSWORD', async () => {
+    await seed(prisma, env);
+
+    const author = await prisma.user.findUnique({ where: { email: 'avtor@tastenest.local' } });
+    expect(await verifyPassword('demo-test-1234', author.passwordHash)).toBe(true);
+  });
+
+  it('skips demo accounts and recipes when DEMO_PASSWORD is not set', async () => {
+    const { DEMO_PASSWORD, ...withoutDemo } = env;
+    await seed(prisma, withoutDemo);
+
+    expect(await prisma.user.count()).toBe(1);
+    expect(await prisma.recipe.count()).toBe(0);
     expect(await prisma.category.count()).toBe(6);
   });
 });

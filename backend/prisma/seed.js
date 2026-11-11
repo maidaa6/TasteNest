@@ -10,10 +10,10 @@ const INGREDIENTS = [
   'krompir', 'zelena solata', 'kumare', 'bazilika', 'kisla smetana', 'jabolka',
 ];
 
-// Local development accounts. Passwords are public on purpose; never reuse them elsewhere.
+// Local development accounts; their shared password comes from DEMO_PASSWORD in backend/.env.
 const DEMO_USERS = [
-  { name: 'Ana Avtorica', email: 'avtor@tastenest.local', password: 'avtor1234', role: 'AUTHOR' },
-  { name: 'Uroš Uporabnik', email: 'uporabnik@tastenest.local', password: 'uporabnik1234', role: 'USER' },
+  { name: 'Ana Avtorica', email: 'avtor@tastenest.local', role: 'AUTHOR' },
+  { name: 'Uroš Uporabnik', email: 'uporabnik@tastenest.local', role: 'USER' },
 ];
 
 const DEMO_RECIPES = [
@@ -72,13 +72,18 @@ export async function seed(prisma, env = process.env) {
   }
 
   if (env.SEED_DEMO_DATA === 'false') return;
+  if (!env.DEMO_PASSWORD) {
+    console.warn('DEMO_PASSWORD is not set; skipping demo accounts and recipes.');
+    return;
+  }
 
+  const passwordHash = await hashPassword(env.DEMO_PASSWORD);
   const users = {};
-  for (const { password, ...data } of DEMO_USERS) {
+  for (const data of DEMO_USERS) {
     users[data.role] = await prisma.user.upsert({
       where: { email: data.email },
       update: {},
-      create: { ...data, passwordHash: await hashPassword(password) },
+      create: { ...data, passwordHash },
     });
   }
 
