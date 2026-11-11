@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
+import AuthLayout from '../components/AuthLayout.jsx';
 import FormField from '../components/FormField.jsx';
 import { register, validateRegistration } from '../services/auth.js';
 import { fieldErrorsFromApi } from '../services/formErrors.js';
@@ -43,21 +44,17 @@ export default function RegisterPage() {
 
   if (registered) {
     return (
-      <section>
-        <h1>Registracija</h1>
+      <AuthLayout title="Registracija">
         <p className="alert alert-success" role="status">
           Račun je ustvarjen. Zdaj se lahko prijavite z e-naslovom {values.email.trim()}.
         </p>
         <p><Link className="button" to="/prijava">Na prijavo</Link></p>
-      </section>
+      </AuthLayout>
     );
   }
 
   return (
-    <section>
-      <h1>Registracija</h1>
-      <p className="muted">Z računom lahko shranjujete recepte in načrtujete obroke.</p>
-
+    <AuthLayout title="Registracija" intro="Z računom lahko shranjujete recepte in načrtujete obroke.">
       <form className="form" onSubmit={onSubmit} noValidate>
         {formError && <p className="alert" role="alert">{formError}</p>}
 
@@ -68,10 +65,11 @@ export default function RegisterPage() {
         <FormField label="Geslo" name="password" type="password" autoComplete="new-password"
           value={values.password} onChange={onChange} error={errors.password} />
 
-        <button className="button" type="submit" disabled={submitting}>
+        <button className="button button-block" type="submit" disabled={submitting}>
           {submitting ? 'Ustvarjanje računa …' : 'Ustvari račun'}
         </button>
+        <p className="muted">Že imate račun? <Link to="/prijava">Prijavite se</Link>.</p>
       </form>
-    </section>
+    </AuthLayout>
   );
 }

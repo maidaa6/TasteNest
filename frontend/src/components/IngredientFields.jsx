@@ -1,4 +1,5 @@
 import { UNITS, emptyIngredientLine } from '../services/recipes.js';
+import Icon from './Icon.jsx';
 
 export default function IngredientFields({ lines, ingredients, errors, onChange }) {
   const update = (key, field, value) =>
@@ -7,8 +8,8 @@ export default function IngredientFields({ lines, ingredients, errors, onChange 
   const remove = (key) => onChange(lines.filter((line) => line.key !== key));
 
   return (
-    <fieldset className="ingredients">
-      <legend>Sestavine</legend>
+    <fieldset className="form-section ingredients">
+      <legend className="form-section-title">Sestavine</legend>
       {errors.ingredients && <p className="field-error">{errors.ingredients}</p>}
 
       {lines.map((line, index) => {
@@ -44,11 +45,11 @@ export default function IngredientFields({ lines, ingredients, errors, onChange 
             </select>
             <button
               type="button"
-              className="button button-secondary"
+              className="icon-only-button"
               aria-label={`Odstrani sestavino ${n}`}
               onClick={() => remove(line.key)}
             >
-              ×
+              <Icon name="close" size={18} />
             </button>
             {[ingredientError, quantityError, unitError].filter(Boolean).map((message) => (
               <span key={message} className="field-error ingredient-error">{message}</span>
@@ -57,7 +58,8 @@ export default function IngredientFields({ lines, ingredients, errors, onChange 
         );
       })}
 
-      <button type="button" className="button button-secondary" onClick={() => onChange([...lines, emptyIngredientLine()])}>
+      <button type="button" className="button button-ghost add-line" onClick={() => onChange([...lines, emptyIngredientLine()])}>
+        <Icon name="plus" size={18} />
         Dodaj sestavino
       </button>
     </fieldset>

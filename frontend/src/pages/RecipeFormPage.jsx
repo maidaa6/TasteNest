@@ -88,28 +88,33 @@ export default function RecipeFormPage() {
   }
 
   return (
-    <section>
+    <section className="form-page">
+      <Link to="/moji-recepti" className="back-link">← Moji recepti</Link>
       <h1>{title}</h1>
+      <p className="muted">Polja brez oznake »neobvezno« so obvezna.</p>
       <form className="form form-wide" onSubmit={onSubmit} noValidate>
         {formError && <p className="alert" role="alert">{formError}</p>}
         {Object.keys(errors).some((k) => errors[k]) && (
           <p className="alert" role="alert">Preverite označena polja.</p>
         )}
 
-        <FormField label="Naslov" name="title" value={form.title} onChange={onFieldChange} error={errors.title} />
-        <FormField label="Kratek opis (neobvezno)" name="description" as="textarea" rows={2}
-          value={form.description} onChange={onFieldChange} error={errors.description} />
+        <div className="form-section">
+          <h2 className="form-section-title">Osnovni podatki</h2>
+          <FormField label="Naslov" name="title" value={form.title} onChange={onFieldChange} error={errors.title} />
+          <FormField label="Kratek opis (neobvezno)" name="description" as="textarea" rows={2}
+            value={form.description} onChange={onFieldChange} error={errors.description} />
 
-        <div className="form-row">
-          <FormField label="Kategorija" name="categoryId" as="select"
-            value={form.categoryId} onChange={onFieldChange} error={errors.categoryId}>
-            <option value="">Izberite kategorijo</option>
-            {options.categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </FormField>
-          <FormField label="Čas priprave (min)" name="prepMinutes" inputMode="numeric"
-            value={form.prepMinutes} onChange={onFieldChange} error={errors.prepMinutes} />
-          <FormField label="Število porcij" name="baseServings" inputMode="numeric"
-            value={form.baseServings} onChange={onFieldChange} error={errors.baseServings} />
+          <div className="form-row">
+            <FormField label="Kategorija" name="categoryId" as="select"
+              value={form.categoryId} onChange={onFieldChange} error={errors.categoryId}>
+              <option value="">Izberite kategorijo</option>
+              {options.categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </FormField>
+            <FormField label="Čas priprave (min)" name="prepMinutes" inputMode="numeric"
+              value={form.prepMinutes} onChange={onFieldChange} error={errors.prepMinutes} />
+            <FormField label="Število porcij" name="baseServings" inputMode="numeric"
+              value={form.baseServings} onChange={onFieldChange} error={errors.baseServings} />
+          </div>
         </div>
 
         <IngredientFields
@@ -122,8 +127,12 @@ export default function RecipeFormPage() {
           }}
         />
 
-        <FormField label="Postopek" name="instructions" as="textarea" rows={8}
-          value={form.instructions} onChange={onFieldChange} error={errors.instructions} />
+        <div className="form-section">
+          <h2 className="form-section-title">Priprava</h2>
+          <FormField label="Postopek" name="instructions" as="textarea" rows={8}
+            placeholder="Vsak korak v svojo vrstico."
+            value={form.instructions} onChange={onFieldChange} error={errors.instructions} />
+        </div>
 
         <div className="form-actions">
           <button className="button" type="submit" disabled={submitting}>

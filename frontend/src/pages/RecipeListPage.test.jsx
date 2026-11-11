@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockApi, renderApp } from '../test/utils.jsx';
 
@@ -60,8 +60,10 @@ describe('RecipeListPage (US-04)', () => {
     renderApp('/?q=juha');
     const user = userEvent.setup();
 
-    await screen.findByRole('option', { name: 'Juhe' });
-    await user.selectOptions(screen.getByLabelText('Kategorija'), 'Juhe');
+    const categories = screen.getByRole('group', { name: 'Kategorija' });
+    await user.click(await within(categories).findByRole('button', { name: 'Juhe' }));
+    expect(within(categories).getByRole('button', { name: 'Juhe' })).toHaveAttribute('aria-pressed', 'true');
+    await screen.findByRole('option', { name: 'korenje' });
     await user.selectOptions(screen.getByLabelText('Sestavina'), 'korenje');
     await user.selectOptions(screen.getByLabelText('Čas priprave'), 'do 45 min');
 

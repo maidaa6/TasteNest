@@ -24,7 +24,7 @@ Zasnova uporablja modularni monolit s tremi plastmi: frontend → REST API → p
 
 | Del | Predvidena tehnologija |
 |---|---|
-| Uporabniški vmesnik | React + Vite, klici API prek `fetch` |
+| Uporabniški vmesnik | React + Vite, klici API prek `fetch`; lasten CSS z design tokeni, pisavi Fraunces in Inter (`@fontsource`) |
 | Strežniški del | Node.js + Express, REST API z JSON pod `/api` |
 | Podatkovna baza | PostgreSQL |
 | Dostop do podatkov in migracije | Prisma ORM |
@@ -43,6 +43,7 @@ Zasnova uporablja modularni monolit s tremi plastmi: frontend → REST API → p
 | [04 – Arhitektura in tehnološki sklad](docs/04-arhitektura-in-tehnoloski-sklad.md) | Plasti, komunikacija in predvideni lokalni zagon |
 | [05 – Uporabniške zgodbe](docs/05-uporabniske-zgodbe.md) | Zgodbe, merila sprejemljivosti in pokritost funkcionalnosti |
 | [06 – Žični modeli](docs/06-wireframes.md) | WF-01, WF-02 in WF-03 v PNG ter izvirniki SVG |
+| [07 – Vizualna podoba](docs/07-vizualna-podoba.md) | Design tokeni, pisave, zasloni, slike receptov in dostopnost |
 
 ### Arhitekturne odločitve (ADR)
 
@@ -88,6 +89,7 @@ TasteNest/
 │   ├── 04-arhitektura-in-tehnoloski-sklad.md
 │   ├── 05-uporabniske-zgodbe.md
 │   ├── 06-wireframes.md
+│   ├── 07-vizualna-podoba.md
 │   ├── wireframes/                 # Izvirniki SVG in WF-01–WF-03 v PNG
 │   └── adr/                        # Predloga in oštevilčene odločitve
 ├── docker-compose.yml
@@ -176,3 +178,14 @@ cd frontend && npm test    # testi komponent in odjemalca API (jsdom)
 Integracijski testi backenda uporabljajo bazo iz `TEST_DATABASE_URL` (`tastenest_test`), pred zagonom nanjo uveljavijo migracije in jo med testi praznijo. Testi se samodejno izvedejo tudi na vsakem Pull Requestu (GitHub Actions, `.github/workflows/ci.yml`).
 
 `.env` in skrivnosti se ne vključujejo v Git; vzorčne datoteke `.env.example`, shema Prisma in migracije se vključujejo.
+
+## Viri fotografij
+
+Fotografije demo receptov in prijavne strani so v `frontend/src/assets/photos/` (pomanjšane), vir je Wikimedia Commons:
+
+| Datoteka | Avtor | Licenca | Vir |
+|---|---|---|---|
+| `korenckova-juha.jpg` | Vegan Feast Catering | [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/) | [Cream of Carrot Soup](https://commons.wikimedia.org/wiki/File:Cream_of_Carrot_Soup_(4129540261).jpg) |
+| `palacinke.jpg` | Line 1921 | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) | [Crêpe à la confiture de fruit](https://commons.wikimedia.org/wiki/File:Cr%C3%AApe_%C3%A0_la_confiture_de_fruit.jpg) |
+| `testenine-s-paradiznikovo-omako.jpg` | HaJunkiyada | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | [Spaghetti with Tomato Sauce](https://commons.wikimedia.org/wiki/File:Liat_Portal_for_Foodie_Disorder_-_Spaghetti_with_Tomato_Sauce.jpg) |
+| `paradiznikova-omaka.jpg` | Dennis Klein | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) | [Fresh Tomato Sauce](https://commons.wikimedia.org/wiki/File:Fresh_Tomato_Sauce_(Unsplash).jpg) |
