@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatQuantity, formatServings, splitSteps } from './format.js';
+import { formatQuantity, formatRecipeCount, formatServings, splitSteps } from './format.js';
 
 describe('formatQuantity', () => {
   it('uses a decimal comma and at most two decimals', () => {
@@ -14,6 +14,13 @@ describe('formatServings', () => {
     [1, '1 porcija'], [2, '2 porciji'], [3, '3 porcije'], [4, '4 porcije'],
     [5, '5 porcij'], [11, '11 porcij'], [101, '101 porcija'], [102, '102 porciji'],
   ])('%i → %s', (n, expected) => expect(formatServings(n)).toBe(expected));
+});
+
+describe('formatRecipeCount', () => {
+  it.each([
+    [1, '1 recept'], [2, '2 recepta'], [3, '3 recepti'], [4, '4 recepti'],
+    [5, '5 receptov'], [12, '12 receptov'], [101, '101 recept'],
+  ])('%i → %s', (n, expected) => expect(formatRecipeCount(n)).toBe(expected));
 });
 
 describe('splitSteps', () => {
