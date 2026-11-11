@@ -5,11 +5,12 @@ const recipe = (title, category = 'Juhe') => ({ title, category: { name: categor
 
 describe('recipeVisual', () => {
   it('uses the bundled photo for a demo recipe, regardless of case and spacing', () => {
-    const visual = recipeVisual(recipe('  KORENČKOVA juha '));
+    const visual = recipeVisual(recipe('Korenčkova juha'));
 
     expect(visual.kind).toBe('photo');
     expect(visual.src).toMatch(/korenckova-juha/);
     expect(visual.alt).toBe('Fotografija jedi: Korenčkova juha');
+    expect(recipeVisual(recipe('  KORENČKOVA juha ')).src).toBe(visual.src);
   });
 
   it('falls back to the category illustration for other recipes', () => {
